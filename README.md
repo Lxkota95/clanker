@@ -8,6 +8,7 @@ A Discord bot, written to learn [tokio](https://tokio.rs) and async Rust. Built 
 |---|---|
 | `/ping` | Replies with the bot's gateway latency |
 | `/r6rank` | Pick your Rainbow Six Siege tier; clanker gives you that rank's role and removes your old one |
+| `/r6verify` | Look up your rank by Ubisoft name and platform, then set the role (only registered when a rank source is configured) |
 
 ### `/r6rank` setup
 - Rank roles are matched **by name**: `Unranked`, `Copper`, `Bronze`, `Silver`, `Gold`, `Platinum`,
@@ -42,6 +43,8 @@ up to an hour to show up. Startup logs say which happened (`registered N command
 ## Development
 - `cargo test`, `cargo clippy --all-targets`, `cargo fmt` (CI runs all three, warnings as errors)
 - New command: add `src/commands/<name>.rs`, then list it in `src/commands/mod.rs`
+- New rank provider: implement `RankSource` (`src/rank/source.rs`); role assignment is shared
+  (`set_rank_role`, `rank::plan`), so nothing else changes. `/r6rank` needs no provider.
 - Logging: `RUST_LOG=clanker=debug cargo run`
 
 ## License

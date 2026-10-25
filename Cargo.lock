@@ -196,7 +196,9 @@ name = "clanker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-trait",
  "poise",
+ "thiserror 2.0.21",
  "tokio",
  "tracing",
  "tracing-subscriber",
