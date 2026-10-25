@@ -8,13 +8,13 @@ const AUDIT_REASON: &str = "clanker /r6rank";
 
 /// Set your Rainbow Six Siege rank: clanker gives you that rank's role (and removes your old one)
 // Named /r6rank, not /rank: other bots (e.g. Dyno) commonly own /rank, and Discord lists every
-// bot's command of the same name side by side
-#[poise::command(
-    slash_command,
-    rename = "r6rank",
-    guild_only,
-    required_bot_permissions = "MANAGE_ROLES"
-)]
+// bot's command of the same name side by side.
+//
+// No `required_bot_permissions = "MANAGE_ROLES"`: poise checks it against the bot's permissions in
+// the *channel*, where an @everyone "Manage Permissions" deny (same permission bit) is common and
+// blocks the command, yet assigning server roles only depends on *server-level* Manage Roles plus
+// role order. Discord's own answer is authoritative; `apply` explains a 403.
+#[poise::command(slash_command, rename = "r6rank", guild_only)]
 pub async fn rank(
     ctx: Context<'_>,
     #[description = "Your current Ranked tier"] tier: RankTier,
@@ -66,16 +66,16 @@ pub async fn rank(
     Ok(())
 }
 
-/// Turns Discord's "Missing Permissions" into an explanation of the usual cause: the bot's role
-/// must sit above the rank roles in Server Settings → Roles, even with Manage Roles.
+/// Turns Discord's "Missing Permissions" into an explanation of the two causes: the bot needs
+/// server-level Manage Roles, and its role must sit above the rank roles in Server Settings → Roles.
 async fn apply(request: impl Future<Output = serenity::Result<()>>) -> Result<(), Error> {
     request.await.map_err(|e| match &e {
         serenity::Error::Http(serenity::HttpError::UnsuccessfulRequest(response))
             if response.status_code == serenity::StatusCode::FORBIDDEN =>
         {
             anyhow::Error::new(e).context(
-                "Discord refused the role change (403). clanker's role must be above the rank \
-                 roles in Server Settings → Roles.",
+                "Discord refused the role change (403). clanker needs Manage Roles, and its role must \
+                 be above the rank roles in Server Settings → Roles.",
             )
         }
         _ => anyhow::Error::new(e),
