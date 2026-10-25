@@ -1,6 +1,7 @@
 //! clanker: a Discord bot built on poise (commands) and serenity (Discord API), running on tokio.
 
 mod commands;
+mod rank;
 
 use anyhow::Context as _;
 use poise::serenity_prelude as serenity;
