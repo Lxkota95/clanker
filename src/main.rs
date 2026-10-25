@@ -7,8 +7,12 @@ use anyhow::Context as _;
 use poise::serenity_prelude as serenity;
 use tracing::{error, info};
 
-/// State shared by every command invocation (empty for now; e.g. an HTTP client or database later).
-pub struct Data {}
+/// State shared by every command invocation.
+pub struct Data {
+    /// Where `/r6verify` looks ranks up; `None` until a provider is configured (then `/r6verify`
+    /// isn't registered). `Box<dyn …>` so the provider is chosen at startup, not compile time.
+    pub rank_source: Option<Box<dyn rank::source::RankSource>>,
+}
 
 /// Applications can use `anyhow` for errors (libraries like the `ansible` crate define their own).
 pub type Error = anyhow::Error;
@@ -34,9 +38,12 @@ async fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
 
+    // No provider yet: the Arenyze implementation of RankSource comes next
+    let rank_source: Option<Box<dyn rank::source::RankSource>> = None;
+
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: commands::all(),
+            commands: commands::all(rank_source.is_some()),
             on_error: |error| Box::pin(on_error(error)),
             ..Default::default()
         })
@@ -51,7 +58,7 @@ async fn main() -> anyhow::Result<()> {
                     info!("registered {} commands globally", commands.len());
                 }
                 info!("logged in as {}", ready.user.name);
-                Ok(Data {})
+                Ok(Data { rank_source })
             })
         })
         .build();

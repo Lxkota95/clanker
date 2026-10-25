@@ -2,8 +2,9 @@
 //!
 //! Kept free of Discord I/O so it can be unit tested: callers fetch the server's roles and the
 //! member's current roles, call [`plan`], then apply the result. `/r6rank` gets the tier from the
-//! member's own choice; a future stats-API lookup would produce a [`RankTier`] the same way and
-//! reuse everything here.
+//! member's own choice; `/r6verify` gets it from a [`source::RankSource`]; both reuse [`plan`].
+
+pub mod source;
 
 use poise::serenity_prelude::RoleId;
 
