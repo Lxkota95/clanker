@@ -38,8 +38,18 @@ async fn main() -> anyhow::Result<()> {
         Err(_) => None,
     };
 
-    // No provider yet: the Arenyze implementation of RankSource comes next
-    let rank_source: Option<Box<dyn rank::source::RankSource>> = None;
+    // Rank lookups (/r6verify) are optional: only with an Arenyze API key
+    let rank_source: Option<Box<dyn rank::source::RankSource>> =
+        match std::env::var("ARENYZE_API_KEY") {
+            Ok(key) if !key.is_empty() => {
+                info!("rank lookups enabled (Arenyze)");
+                Some(Box::new(rank::arenyze::Arenyze::new(key)?))
+            }
+            _ => {
+                info!("rank lookups disabled: ARENYZE_API_KEY not set; /r6verify not registered");
+                None
+            }
+        };
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {

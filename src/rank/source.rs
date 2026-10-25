@@ -9,7 +9,7 @@ use super::RankTier;
 use async_trait::async_trait;
 
 /// The platform a player's Ubisoft account plays ranked on.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, poise::ChoiceParameter)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, poise::ChoiceParameter)]
 pub enum Platform {
     #[name = "PC (Ubisoft Connect)"]
     Pc,

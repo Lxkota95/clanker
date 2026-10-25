@@ -24,7 +24,8 @@ pub async fn rank(
 /// Look up your Rainbow Six Siege rank and get the matching role
 // Only registered when a rank source is configured (see `commands::all`). It assigns the role to
 // whoever runs it, for the name they give: it checks the rank, not that the account is theirs.
-#[poise::command(slash_command, rename = "r6verify", guild_only)]
+// The 10-minute cooldown protects Arenyze's free quota (2,000 calls/month) from one person spamming
+#[poise::command(slash_command, rename = "r6verify", guild_only, user_cooldown = 600)]
 pub async fn verify(
     ctx: Context<'_>,
     #[description = "Your Ubisoft account name"] name: String,

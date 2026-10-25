@@ -4,6 +4,7 @@
 //! member's current roles, call [`plan`], then apply the result. `/r6rank` gets the tier from the
 //! member's own choice; `/r6verify` gets it from a [`source::RankSource`]; both reuse [`plan`].
 
+pub mod arenyze;
 pub mod source;
 
 use poise::serenity_prelude::RoleId;
@@ -41,6 +42,24 @@ impl RankTier {
     /// The server role for this tier: the tier's name, e.g. "Gold".
     pub fn role_name(self) -> &'static str {
         poise::ChoiceParameter::name(&self)
+    }
+
+    /// The tier for a Ranked 3.0 rank-points total. Boundaries from Arenyze's Ranked 3.0 rank list
+    /// (`/ranks?version=v7`, 2026-10-25): each tier spans 500 points (five divisions of 100) from
+    /// Copper at 1000 to Champion at 4500; Legend starts at 5000.
+    pub fn from_rank_points(points: u32) -> Self {
+        match points {
+            0..1000 => Self::Unranked,
+            1000..1500 => Self::Copper,
+            1500..2000 => Self::Bronze,
+            2000..2500 => Self::Silver,
+            2500..3000 => Self::Gold,
+            3000..3500 => Self::Platinum,
+            3500..4000 => Self::Emerald,
+            4000..4500 => Self::Diamond,
+            4500..5000 => Self::Champion,
+            5000.. => Self::Legend,
+        }
     }
 }
 
@@ -133,6 +152,18 @@ mod tests {
         assert!(plan.missing.contains(&"Diamond"));
         assert!(plan.missing.contains(&"Copper"));
         assert!(!plan.missing.contains(&"Gold"));
+    }
+
+    #[test]
+    fn rank_points_map_to_tiers_at_the_boundaries() {
+        assert_eq!(RankTier::from_rank_points(0), RankTier::Unranked);
+        assert_eq!(RankTier::from_rank_points(999), RankTier::Unranked);
+        assert_eq!(RankTier::from_rank_points(1000), RankTier::Copper);
+        assert_eq!(RankTier::from_rank_points(2999), RankTier::Gold);
+        assert_eq!(RankTier::from_rank_points(3500), RankTier::Emerald);
+        assert_eq!(RankTier::from_rank_points(4999), RankTier::Champion);
+        assert_eq!(RankTier::from_rank_points(5000), RankTier::Legend);
+        assert_eq!(RankTier::from_rank_points(9000), RankTier::Legend);
     }
 
     #[test]
