@@ -2,8 +2,9 @@
 name = "clanker"
 version = "0.1.0"
 edition = "2024"
-# tokio needs 1.85; checked in CI
-rust-version = "1.85"
+# Lowest Rust the latest dependencies support (icu_*, time); checked in CI. An application, so
+# dependencies stay current rather than being held back for an older compiler.
+rust-version = "1.88"
 description = "A Discord bot, written to learn tokio and async Rust"
 license = "MIT"
 repository = "https://github.com/Lxkota95/clanker"

@@ -23,9 +23,9 @@ jobs:
       - run: cargo test
 
   msrv:
-    name: rust-version (1.85)
+    name: rust-version (1.88)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@1.85
+      - uses: dtolnay/rust-toolchain@1.88
       - run: cargo check
