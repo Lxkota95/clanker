@@ -1,0 +1,17 @@
+[package]
+name = "clanker"
+version = "0.1.0"
+edition = "2024"
+# tokio needs 1.85; checked in CI
+rust-version = "1.85"
+description = "A Discord bot, written to learn tokio and async Rust"
+license = "MIT"
+repository = "https://github.com/Lxkota95/clanker"
+publish = false
+
+[dependencies]
+anyhow = "1.0.104"
+poise = "0.7"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }

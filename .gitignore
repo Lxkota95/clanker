@@ -1,0 +1,4 @@
+/target
+# Local overrides; never commit tokens
+.env
+.envrc.local
