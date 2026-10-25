@@ -7,15 +7,15 @@ A Discord bot, written to learn [tokio](https://tokio.rs) and async Rust. Built 
 | Command | What it does |
 |---|---|
 | `/ping` | Replies with the bot's gateway latency |
-| `/rank` | Pick your Rainbow Six Siege tier; clanker gives you that rank's role and removes your old one |
+| `/r6rank` | Pick your Rainbow Six Siege tier; clanker gives you that rank's role and removes your old one |
 
-### `/rank` setup
+### `/r6rank` setup
 - Rank roles are matched **by name**: `Unranked`, `Copper`, `Bronze`, `Silver`, `Gold`, `Platinum`,
-  `Emerald`, `Diamond`, `Champion`, `Legend`. clanker doesn't create roles; `/rank` lists any that
+  `Emerald`, `Diamond`, `Champion`, `Legend`. clanker doesn't create roles; `/r6rank` lists any that
   are missing.
 - clanker needs the **Manage Roles** permission, and its own role must be **above** the rank roles in
   Server Settings → Roles (Discord won't let a bot assign roles above its own).
-- Role changes appear in the server's audit log with the reason `clanker /rank`.
+- Role changes appear in the server's audit log with the reason `clanker /r6rank`.
 
 ## Setting up the Discord application (once)
 1. In the [Discord Developer Portal](https://discord.com/developers/applications), create an
@@ -26,15 +26,17 @@ A Discord bot, written to learn [tokio](https://tokio.rs) and async Rust. Built 
    secret-tool store --label='clanker Discord bot token' service discord app clanker
    ```
 4. **OAuth2 → URL Generator**: scopes `bot` and `applications.commands`, bot permission
-   `Send Messages` and `Manage Roles` (for `/rank`). Open the generated URL to invite clanker.
+   `Send Messages` and `Manage Roles` (for `/r6rank`). Open the generated URL to invite clanker.
 
 ## Running locally
 ```
 direnv allow   # once: loads DISCORD_TOKEN from the keyring via .envrc
 cargo run
 ```
-Set `DEV_GUILD_ID` in `.envrc` to your test server's ID so commands appear there instantly;
-without it, commands register globally, which can take up to an hour to show up. Stop with Ctrl-C
+Put `export DEV_GUILD_ID=<your test server's ID>` in `.envrc.local` (git-ignored, loaded by
+`.envrc`) so commands appear there instantly; without it, commands register globally, which can take
+up to an hour to show up. Startup logs say which happened (`registered N commands in dev guild` or
+`... globally`). Stop with Ctrl-C
 (clanker shuts down its gateway connection cleanly).
 
 ## Development

@@ -4,16 +4,23 @@ use anyhow::Context as _;
 use poise::serenity_prelude as serenity;
 
 /// Reason shown in the server's audit log for every role change clanker makes here.
-const AUDIT_REASON: &str = "clanker /rank";
+const AUDIT_REASON: &str = "clanker /r6rank";
 
 /// Set your Rainbow Six Siege rank: clanker gives you that rank's role (and removes your old one)
-#[poise::command(slash_command, guild_only, required_bot_permissions = "MANAGE_ROLES")]
+// Named /r6rank, not /rank: other bots (e.g. Dyno) commonly own /rank, and Discord lists every
+// bot's command of the same name side by side
+#[poise::command(
+    slash_command,
+    rename = "r6rank",
+    guild_only,
+    required_bot_permissions = "MANAGE_ROLES"
+)]
 pub async fn rank(
     ctx: Context<'_>,
     #[description = "Your current Ranked tier"] tier: RankTier,
 ) -> Result<(), Error> {
     // guild_only guarantees both of these for slash commands
-    let guild_id = ctx.guild_id().context("/rank used outside a server")?;
+    let guild_id = ctx.guild_id().context("/r6rank used outside a server")?;
     let member = ctx
         .author_member()
         .await
