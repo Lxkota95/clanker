@@ -7,6 +7,15 @@ A Discord bot, written to learn [tokio](https://tokio.rs) and async Rust. Built 
 | Command | What it does |
 |---|---|
 | `/ping` | Replies with the bot's gateway latency |
+| `/rank` | Pick your Rainbow Six Siege tier; clanker gives you that rank's role and removes your old one |
+
+### `/rank` setup
+- Rank roles are matched **by name**: `Unranked`, `Copper`, `Bronze`, `Silver`, `Gold`, `Platinum`,
+  `Emerald`, `Diamond`, `Champion`, `Legend`. clanker doesn't create roles; `/rank` lists any that
+  are missing.
+- clanker needs the **Manage Roles** permission, and its own role must be **above** the rank roles in
+  Server Settings → Roles (Discord won't let a bot assign roles above its own).
+- Role changes appear in the server's audit log with the reason `clanker /rank`.
 
 ## Setting up the Discord application (once)
 1. In the [Discord Developer Portal](https://discord.com/developers/applications), create an
@@ -17,7 +26,7 @@ A Discord bot, written to learn [tokio](https://tokio.rs) and async Rust. Built 
    secret-tool store --label='clanker Discord bot token' service discord app clanker
    ```
 4. **OAuth2 → URL Generator**: scopes `bot` and `applications.commands`, bot permission
-   `Send Messages`. Open the generated URL to invite clanker to your server.
+   `Send Messages` and `Manage Roles` (for `/rank`). Open the generated URL to invite clanker.
 
 ## Running locally
 ```
