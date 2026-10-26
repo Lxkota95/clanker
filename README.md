@@ -47,5 +47,14 @@ up to an hour to show up. Startup logs say which happened (`registered N command
   (`set_rank_role`, `rank::plan`), so nothing else changes. `/r6rank` needs no provider.
 - Logging: `RUST_LOG=clanker=debug cargo run`
 
+## Known limitations
+- **`/r6verify` hasn't completed a live lookup yet.** Every request to Arenyze from 2026-10-25 to
+  2026-10-26 failed upstream (`503 STATS_UPSTREAM_THROTTLED`, or a timeout); clanker handled each one
+  as designed (no role change, a pointer to `/r6rank`). The success path follows the r6-data.js
+  client's documented response types and is unit tested, but hasn't seen a real profile. If a real
+  lookup assigns a wrong tier, check `rank::arenyze::current_ranked` against the raw response.
+- Rank data comes from Ubisoft's unofficial API via a third party, so it can break or disappear;
+  `/r6rank` (self-assigned) always works.
+
 ## License
 MIT
